@@ -72,7 +72,12 @@ class Block_Woo_Orders {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'block-woo-orders';
+
+		if ( defined( 'BLOCK_WOO_ORDERS_PLUGIN_NAME' ) ) {
+			$this->version = BLOCK_WOO_ORDERS_PLUGIN_NAME;
+		} else {
+			$this->version = 'block-woo-orders';
+		}
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -156,6 +161,7 @@ class Block_Woo_Orders {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu' );
 
 	}
 

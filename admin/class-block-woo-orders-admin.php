@@ -100,4 +100,36 @@ class Block_Woo_Orders_Admin {
 
 	}
 
+	public function add_admin_menu() {
+		add_menu_page(
+			__( 'Block Woo Orders', 'block-woo-orders' ),
+			'Block Woo Orders',
+			'manage_options',
+			'block-woo-orders',
+			array( $this, 'admin_page_display' ),
+			'dashicons-shield',
+			60
+		);
+
+		add_submenu_page(
+			'block-woo-orders',
+			'Block Woo Orders',
+			'Home',
+			'manage_options',
+			'block-woo-orders'
+		);
+
+		add_submenu_page(
+			'block-woo-orders',
+			'Block Woo Orders Settings',
+			'Settings',
+			'manage_options',
+			'settings',
+			array( $this, 'admin_page_display' )
+		);
+	}
+
+	public function admin_page_display() {
+		include 'partials/block-woo-orders-admin-display.php';
+	}
 }
