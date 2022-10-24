@@ -31,11 +31,37 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
- * Currently plugin version.
+ * Current plugin version.
  * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
  */
-define( 'BLOCK_WOO_ORDERS_VERSION', '1.0.0' );
+defined( 'BLOCK_WOO_ORDERS_VERSION' ) or define( 'BLOCK_WOO_ORDERS_VERSION', '1.0.0' );
+
+/**
+ * Plugin Name
+ * Start at version 1.0.0
+ */
+defined( 'BLOCK_WOO_ORDERS_PLUGIN_NAME' ) or define( 'BLOCK_WOO_ORDERS_PLUGIN_NAME', 'block-woo-orders' );
+
+/**
+ * Plugin Base FILE
+ * Start at version 1.0.0
+ */
+defined( 'BLOCK_WOO_ORDERS_BASE_FILE' ) or define( 'BLOCK_WOO_ORDERS_BASE_FILE', __FILE__ );
+
+/**
+ * Plugin base dir path.
+ * used to locate plugin resources primarily code files
+ * Start at version 1.0.0
+ */
+defined( 'BLOCK_WOO_ORDERS_BASE_DIR' ) or define( 'BLOCK_WOO_ORDERS_BASE_DIR', plugin_dir_path( __FILE__ ) );
+
+
+/**
+ * Plugin url to access its resources through browser
+ * used to access assets images/css/js files
+ * Start at version 1.0.0
+ */
+defined( 'BLOCK_WOO_ORDERS_PLUGIN_URL' ) or define( 'BLOCK_WOO_ORDERS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * The code that runs during plugin activation.

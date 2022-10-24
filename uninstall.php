@@ -30,3 +30,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+global $wpdb;
+$table_array = [
+	$wpdb->prefix . "wbo_app_user_ids",
+	$wpdb->prefix . "wbo_emails",
+];
+
+foreach ( $table_array as $table ) {
+	$wpdb->query( "DROP TABLE IF EXISTS $table" );
+}
