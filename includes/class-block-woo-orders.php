@@ -74,9 +74,9 @@ class Block_Woo_Orders {
 		}
 
 		if ( defined( 'BLOCK_WOO_ORDERS_PLUGIN_NAME' ) ) {
-			$this->version = BLOCK_WOO_ORDERS_PLUGIN_NAME;
+			$this->plugin_name = BLOCK_WOO_ORDERS_PLUGIN_NAME;
 		} else {
-			$this->version = 'block-woo-orders';
+			$this->plugin_name = 'block-woo-orders';
 		}
 
 		$this->load_dependencies();
