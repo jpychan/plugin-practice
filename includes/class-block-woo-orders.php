@@ -118,6 +118,11 @@ class Block_Woo_Orders {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-block-woo-orders-i18n.php';
 
 		/**
+		 * The class to load the email entries
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-block-woo-orders-email.php';
+
+		/**
 		 * The class responsible for defining Woocommerce order custom statuses
 		 * of the plugin.
 		 */
@@ -169,7 +174,7 @@ class Block_Woo_Orders {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_admin_menu' );
-
+		$this->loader->add_action( 'admin_post_bwo_add_entry', $plugin_admin, 'add_entry' );
 	}
 
 	/**

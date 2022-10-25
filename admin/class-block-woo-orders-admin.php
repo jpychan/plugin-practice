@@ -106,15 +106,15 @@ class Block_Woo_Orders_Admin {
 			'Block Woo Orders',
 			'manage_options',
 			'block-woo-orders',
-			array( $this, 'admin_page_display' ),
+			array( $this, 'add_entry_page_display' ),
 			'dashicons-shield',
 			60
 		);
 
 		add_submenu_page(
 			'block-woo-orders',
-			'Block Woo Orders',
-			'Home',
+			'Add New Entry',
+			'Add New Entry',
 			'manage_options',
 			'block-woo-orders'
 		);
@@ -129,7 +129,47 @@ class Block_Woo_Orders_Admin {
 		);
 	}
 
+	public function add_entry_page_display() {
+		include 'partials/block-woo-orders-add-entry-display.php';
+	}
+
 	public function admin_page_display() {
 		include 'partials/block-woo-orders-admin-display.php';
+	}
+
+	public function add_entry() {
+		check_admin_referer('bwo_add_or_update_entry');
+		$type = $_POST['type'];
+		$id = intval($_POST['id']);
+
+		if (!empty($id)) {
+			$entry = new Block_Woo_Orders_Email($id);
+		}
+		else {
+			$entry = new Block_Woo_Orders_Email();
+		}
+
+		if ($type === "email") {
+			$name = sanitize_email($_POST['name']);
+		}
+		else {
+			$name = sanitize_text_field($_POST['name']);
+		}
+
+		$notes = sanitize_textarea_field($_POST['notes']);
+		$flag = sanitize_text_field($_POST['flag']);
+
+		$entry->set_name($name);
+		$entry->set_flag($flag);
+		$entry->set_notes($notes);
+
+		// TO DO - check if entry already exists. If it does, ask to update the entry
+		$result = $entry->save();
+
+		$added = $result > 0 ? 1 : 0;
+
+//		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'added' => $added ), admin_url( 'admin.php?page=dd_fraud_' . $type ) ) ) );
+		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'added' => $added ), admin_url( 'admin.php?page=block-woo-orders' ) ) ) );
+		exit();
 	}
 }
