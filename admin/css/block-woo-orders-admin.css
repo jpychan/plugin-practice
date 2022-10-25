@@ -2,3 +2,27 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.order-status.status-blocked,
+.fraud_details_status.blocked,
+.fraud_details_header.blocked
+{
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.order-status.status-verified,
+.fraud_details_status.verified,
+.fraud_details_header.verified
+{
+    color: #3c763d;
+    background-color: #dff0d8;
+}
+
+.order-status.status-review-required,
+.fraud_details_status.review,
+.fraud_details_header.review
+{
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+}

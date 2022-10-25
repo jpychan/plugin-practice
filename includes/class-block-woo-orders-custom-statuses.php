@@ -16,6 +16,15 @@ if ( ! defined( 'WPINC' ) ) {
 class Block_Woo_Orders_Custom_Statuses {
 
 	public function register_custom_statuses() {
+		register_post_status( 'wc-verified', array(
+			'label'                     => 'Verified',
+			'public'                    => true,
+			'show_in_admin_status_list' => true,
+			'show_in_admin_all_list'    => true,
+			'exclude_from_search'       => false,
+			'label_count'               => _n_noop( 'Verified <span class="count">(%s)</span>', 'Verified <span class="count">(%s)</span>' )
+		) );
+
 		register_post_status( 'wc-review-required', array(
 			'label'                     => 'Review Required',
 			'public'                    => true,
@@ -41,6 +50,7 @@ class Block_Woo_Orders_Custom_Statuses {
 		foreach ( $order_statuses as $key => $status ) {
 			$new_order_statuses[ $key ] = $status;
 			if ( 'wc-processing' === $key ) {
+				$new_order_statuses['wc-verified']        = 'Verified';
 				$new_order_statuses['wc-review-required'] = 'Review Required';
 				$new_order_statuses['wc-blocked']         = 'Blocked';
 			}
@@ -49,9 +59,10 @@ class Block_Woo_Orders_Custom_Statuses {
 		return $new_order_statuses;
 	}
 
-	public function add_review_to_valid_order_statuses( $statuses, $order ) {
+	public function add_new_order_statuses( $statuses, $order ) {
 		// Registering the custom status as valid for payment
 		$statuses[] = 'review-required';
+		$statuses[] = 'verified';
 
 		return $statuses;
 	}

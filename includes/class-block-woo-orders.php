@@ -84,7 +84,7 @@ class Block_Woo_Orders {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->set_custom_order_statuses();
-
+		$this->define_woocommerce_hooks();
 	}
 
 	/**
@@ -132,6 +132,11 @@ class Block_Woo_Orders {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-block-woo-orders-admin.php';
+
+		/**
+		 * The class responsible for defining all actions for Woocommerce.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-block-woo-orders-woocommerce-hooks.php';
 
 		/**
 		 * The class responsible for displaying the entries
@@ -197,11 +202,27 @@ class Block_Woo_Orders {
 
 	}
 
+	/**
+	 * Register all of the hooks related to Woocommerce
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function define_woocommerce_hooks() {
+
+		$woocommerce_hooks = new Block_Woo_Orders_Woocommerce_Hooks();
+		$this->loader->add_action('woocommerce_checkout_order_processed', $woocommerce_hooks, 'scan_orders_for_fraud', 10, 3);
+
+	}
+
 	private function set_custom_order_statuses() {
+
 		$custom_order_statuses = new Block_Woo_Orders_Custom_Statuses();
 		$this->loader->add_action( 'init', $custom_order_statuses, 'register_custom_statuses', 9 );
 		$this->loader->add_filter( 'wc_order_statuses', $custom_order_statuses, 'add_custom_statuses_to_order' );
-		$this->loader->add_filter( 'woocommerce_valid_order_statuses_for_payment', $custom_order_statuses, 'add_review_to_valid_order_statuses', 10, 2 );
+		$this->loader->add_filter( 'woocommerce_valid_order_statuses_for_payment', $custom_order_statuses, 'add_new_order_statuses', 10, 2 );
+
 	}
 
 	/**

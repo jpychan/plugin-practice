@@ -3,16 +3,6 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://jennychan.dev
- * @since      1.0.0
- *
- * @package    Block_Woo_Orders
- * @subpackage Block_Woo_Orders/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
@@ -69,21 +59,7 @@ class Block_Woo_Orders_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Block_Woo_Orders_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Block_Woo_Orders_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/block-woo-orders-admin.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -92,21 +68,7 @@ class Block_Woo_Orders_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Block_Woo_Orders_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Block_Woo_Orders_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/block-woo-orders-admin.js', array( 'jquery' ), $this->version, false );
-
 	}
 
 	public function add_admin_menu() {
