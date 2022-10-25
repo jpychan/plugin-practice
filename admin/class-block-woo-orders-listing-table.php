@@ -28,9 +28,9 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		);
 	}
 
-	public function get_entry_type()
-	{
-		$type = str_replace('bwo_', "", $_GET['page']);
+	public function get_entry_type() {
+		$type = str_replace( 'bwo_', "", $_GET['page'] );
+
 		return $type;
 	}
 
@@ -40,13 +40,14 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$screen = get_current_screen();
-		$type = $this->get_entry_type();
+		$screen        = get_current_screen();
+		$type          = $this->get_entry_type();
 		$table_columns = array(
-			$type       => __( $type, 'block-woo-orders' ),
-			'flag'        => __( 'Flag', 'block-woo-orders' ),
-			'notes'       => __( 'Notes', 'block-woo-orders' ),
-			'created_at'  => __( 'Created At', 'block-woo-orders' ),
+			'entry'      => __( ucfirst( $type ), 'block-woo-orders' ),
+			'flag'       => __( 'Flag', 'block-woo-orders' ),
+			'notes'      => __( 'Notes', 'block-woo-orders' ),
+			'created_at' => __( 'Created At', 'block-woo-orders' ),
+			'updated_at' => __( 'Updated At', 'block-woo-orders' ),
 		);
 
 		return $table_columns;
@@ -59,20 +60,20 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			case 'flag':
 			case 'notes':
 			case 'ID':
-				return $item[$column_name];
+				return $item[ $column_name ];
 			default:
-				return $item[$column_name];
+				return $item[ $column_name ];
 		}
 	}
 
 	//Query, filter data, handle sorting, pagination, and any other data-manipulation required prior to rendering
 	public function prepare_items() {
 
-		$columns = $this->get_columns();
-		$hidden = array();
+		$columns  = $this->get_columns();
+		$hidden   = array();
 		$sortable = $this->get_sortable_columns();
 //		$this->column_headers = $this->get_column_info();
-		$this->_column_headers = array($columns, $hidden, $sortable);
+		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		// check and process any actions such as bulk actions.
 		$this->handle_table_actions();
@@ -87,28 +88,28 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		$entries_per_page = $this->get_items_per_page( 'entries_per_page' );
 
 		// set the pagination arguments
-		$this->set_pagination_args( array (
+		$this->set_pagination_args( array(
 			'total_items' => $data['count'],
 			'per_page'    => $entries_per_page,
-			'total_pages' => ceil( $data['count']/$entries_per_page )
+			'total_pages' => ceil( $data['count'] / $entries_per_page )
 		) );
 	}
 
 	public function fetch_table_data() {
 
 		$type = $this->get_entry_type();
-		$flag = ( isset($_REQUEST['flag']) ? $_REQUEST['flag'] : 'all');
+		$flag = ( isset( $_REQUEST['flag'] ) ? $_REQUEST['flag'] : 'all' );
 
 		global $wpdb;
 
 		$table_name = $wpdb->prefix . 'bwo_' . $type . "s";
-		$orderby = ( isset( $_GET['orderby'] ) ) ? esc_sql( $_GET['orderby'] ) : 'id';
-		$order = ( isset( $_GET['order'] ) ) ? esc_sql( $_GET['order'] ) : 'ASC';
+		$orderby    = ( isset( $_GET['orderby'] ) ) ? esc_sql( $_GET['orderby'] ) : 'id';
+		$order      = ( isset( $_GET['order'] ) ) ? esc_sql( $_GET['order'] ) : 'ASC';
 
-		$current_page = $this->get_pagenum();
+		$current_page     = $this->get_pagenum();
 		$entries_per_page = $this->get_items_per_page( 'entries_per_page' );
 
-		if ( $current_page > 1) {
+		if ( $current_page > 1 ) {
 			$offset = $entries_per_page * ( $current_page - 1 );
 		} else {
 			$offset = 0;
@@ -116,37 +117,33 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 
 		$search = '';
 
-		if ( ! empty( $_REQUEST['s'] ) )
-		{
+		if ( ! empty( $_REQUEST['s'] ) ) {
 			$search = "AND $type LIKE '%" . esc_sql( $wpdb->esc_like( wc_clean( wp_unslash( $_REQUEST['s'] ) ) ) ) . "%' ";
 		}
 
 		$sql = "SELECT ID, $type, flag, notes, created_at, updated_at FROM $table_name WHERE ";
-		if ($flag !== "all")
-		{
-			$sql .= $wpdb->prepare("flag = %s AND", $flag);
+		if ( $flag !== "all" ) {
+			$sql .= $wpdb->prepare( "flag = %s AND", $flag );
 		}
 		$sql .= " 1 = 1 {$search} ORDER BY $orderby $order";
-		$sql .= $wpdb->prepare(" LIMIT %d OFFSET %d;", $entries_per_page, $offset);
+		$sql .= $wpdb->prepare( " LIMIT %d OFFSET %d;", $entries_per_page, $offset );
 
-		$query_results = $wpdb->get_results( $sql, ARRAY_A  );
+		$query_results = $wpdb->get_results( $sql, ARRAY_A );
 
 		$count_sql = "SELECT COUNT(id) FROM $table_name WHERE ";
-		if ($flag !== "all")
-		{
-			$count_sql .= $wpdb->prepare("flag = %s AND", $flag);
+		if ( $flag !== "all" ) {
+			$count_sql .= $wpdb->prepare( "flag = %s AND", $flag );
 		}
 
 		$count_sql .= " 1 = 1 {$search};";
-		$count = $wpdb->get_var($count_sql);
+		$count     = $wpdb->get_var( $count_sql );
 
 		$data = array( 'results' => $query_results, 'count' => $count );
 
 		return $data;
 	}
 
-	public function handle_table_actions()
-	{
+	public function handle_table_actions() {
 		$the_table_action = $this->current_action();
 
 		if ( 'delete_entry' === $the_table_action ) {
@@ -154,10 +151,9 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			// verify the nonce.
 			if ( ! wp_verify_nonce( $nonce, 'delete_entry' ) ) {
 				$this->invalid_nonce_redirect();
-			}
-			else {
-				$deleted = $this->delete_entry( absint( $_REQUEST['id']), $_REQUEST['type'] );
-				$url = wp_get_referer();
+			} else {
+				$deleted = $this->delete_entry( absint( $_REQUEST['id'] ), $_REQUEST['type'] );
+				$url     = wp_get_referer();
 				wp_redirect( add_query_arg( 'deleted', $deleted, $url ) );
 				exit();
 			}
@@ -168,138 +164,139 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			// verify the nonce.
 			if ( ! wp_verify_nonce( $nonce, 'edit_entry' ) ) {
 				$this->invalid_nonce_redirect();
-			}
-			else {
-				$this->page_view_edit_entry( absint( $_REQUEST['id']), $_REQUEST['type'] );
+			} else {
+				$this->page_view_edit_entry( absint( $_REQUEST['id'] ), $_REQUEST['type'] );
 				exit();
 			}
 		}
 	}
 
-	public function no_items()
-	{
+	public function no_items() {
 		_e( 'No entries found.', 'block-woo-orders' );
 	}
 
-	protected function get_sortable_columns()
-	{
-		$type = $this->get_entry_type();
-		$sortable_columns = array (
-			$type => $type,
-			'flag' => 'flag',
-			'created_at' => 'created_at',
+	protected function get_sortable_columns() {
+		$type             = $this->get_entry_type();
+		$sortable_columns = array(
+			'entry'      => array( $type, false ),
+			'flag'       => array( 'flag', false ),
+			'created_at' => array( 'created_at', false ),
+			'updated_at' => array( 'updated_at', false ),
 		);
+
 		return $sortable_columns;
 	}
 
-	protected function column_entry( $item )
-	{
+	protected function column_entry( $item ) {
 		$type = $this->get_entry_type();
 
-		$admin_page_url =  admin_url( 'admin.php?page=dd_fraud_' . $type );
+		$admin_page_url = admin_url( 'admin.php?page=bwo_' . $type );
 
 		$query_args_edit_entry = array(
-			'page'		=>  wp_unslash( $_REQUEST['page'] ),
-			'action'	=> 'edit_entry',
-			'type'    => $type,
-			'id'		=> absint( $item['ID']),
-			'_wpnonce'	=> wp_create_nonce( 'edit_dd_entry' ),
+			'page'     => wp_unslash( $_REQUEST['page'] ),
+			'action'   => 'edit_entry',
+			'type'     => $type,
+			'id'       => absint( $item['ID'] ),
+			'_wpnonce' => wp_create_nonce( 'edit_entry' ),
 		);
 
 		$edit_entry_link = esc_url( add_query_arg( $query_args_edit_entry, $admin_page_url ) );
 
-		$actions['edit_entry'] = '<a href="' . $edit_entry_link . '">' . __( 'Edit Entry', 'block-woo-orders') . '</a>';
+		$actions['edit_entry'] = '<a href="' . $edit_entry_link . '">' . __( 'Edit Entry', 'block-woo-orders' ) . '</a>';
 
 		$query_args_delete_entry = array(
-			'page'		=>  wp_unslash( $_REQUEST['page'] ),
-			'action'	=> 'delete_entry',
-			'type'    => $type,
-			'id'		=> absint( $item['ID']),
-			'_wpnonce'	=> wp_create_nonce( 'delete_entry' ),
+			'page'     => wp_unslash( $_REQUEST['page'] ),
+			'action'   => 'delete_entry',
+			'type'     => $type,
+			'id'       => absint( $item['ID'] ),
+			'_wpnonce' => wp_create_nonce( 'delete_entry' ),
 		);
 
-		$delete_entry_link = esc_url( add_query_arg( $query_args_delete_entry, $admin_page_url ) );
-		$actions['delete_entry'] = '<span class="trash"><a href="' . $delete_entry_link . '">' . __( 'Delete', 'block-woo-orders') . '</a></span>';
+		$delete_entry_link       = esc_url( add_query_arg( $query_args_delete_entry, $admin_page_url ) );
+		$actions['delete_entry'] = '<span class="trash"><a href="' . $delete_entry_link . '">' . __( 'Delete', 'block-woo-orders' ) . '</a></span>';
 
-		$row_value = sanitize_text_field($item[$type]);
+		$row_value = sanitize_text_field( $item[ $type ] );
+
 		return $row_value . $this->row_actions( $actions );
 	}
 
-	protected function column_notes ( $item )
-	{
-		$row_value = stripslashes($item['notes']);
+	protected function column_notes( $item ) {
+		$row_value = stripslashes( $item['notes'] );
+
 		return $row_value;
 	}
 
-	private function delete_entry($id, $type)
-	{
-		global $wpdb;
+	private function delete_entry( $id, $type ) {
+		if ( $type === "email" ) {
+			$email = new Block_Woo_Orders_Email( $id );
 
-		$table_name = $wpdb->prefix . 'bwo_' . $type . 's';
-		$delete = $wpdb->delete( $table_name, array( 'id' => $id ), array( '%d' ) );
-
-		return $delete;
+			return $email->delete();
+		}
 	}
 
 	public function invalid_nonce_redirect() {
 		wp_die( __( 'Invalid Nonce', 'block-woo-orders' ),
 			__( 'Error', 'block-woo-orders' ),
 			array(
-				'response' 	=> 403,
-				'back_link' =>  esc_url( add_query_arg( array( 'page' => wp_unslash( $_REQUEST['page'] ) ) , admin_url( 'admin.php?page=dd_fraud_' . $_REQUEST['type'] ) ) ),
+				'response'  => 403,
+				'back_link' => esc_url( add_query_arg( array( 'page' => wp_unslash( $_REQUEST['page'] ) ), admin_url( 'admin.php?page=bwo_' . $_REQUEST['type'] ) ) ),
 			)
 		);
 	}
 
 	private function page_view_edit_entry( $id, $type ) {
-
-		$entry = $this->get_entry($id, $type);
-//		include_once( 'views/add-entry.php' );
+		$entry = $this->get_entry( $id, $type );
+		include_once( 'partials/block-woo-orders-add-entry-display.php' );
 	}
 
-	private function get_entry( $id, $type )
-	{
-		global $wpdb;
+	private function get_entry( $id, $type ) {
+		if ( $type === "email" ) {
+			$email = new Block_Woo_Orders_Email( $id );
 
-		$table = $wpdb->prefix . 'dd_fraud_' . $type;
-		$sql = $wpdb->prepare("SELECT * FROM $table WHERE id = %d", $id);
-		$result = $wpdb->get_row($sql, ARRAY_A);
-		return $result;
+			return $email;
+		}
 	}
 
-	protected function get_views()
-	{
+	protected function get_views() {
 		global $wpdb;
 
-		$views = array();
-		$current = ( !empty($_REQUEST['flag']) ? $_REQUEST['flag'] : 'all');
+		$views   = array();
+		$current = ( ! empty( $_REQUEST['flag'] ) ? $_REQUEST['flag'] : 'all' );
 
-		$type = $this->get_entry_type();
+		$type  = $this->get_entry_type();
 		$table = $wpdb->prefix . 'bwo_' . $type . "s";
-		$blocked_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table WHERE flag = 'blocked';" );
-		$review_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table WHERE flag = 'review';" );
-		$verified_count = $wpdb->get_var( "SELECT COUNT(*) FROM $table WHERE flag = 'verified';" );
-		$total = $blocked_count + $review_count + $verified_count;
+		$total = 0;
+
+		$flags = [
+			'blocked'  => [
+				'label' => 'Blocked',
+				'count' => 0,
+			],
+			'review'   => [
+				'label' => 'Review Required',
+				'count' => 0,
+			],
+			'verified' => [
+				'label' => 'Verified',
+				'count' => 0,
+			],
+		];
 
 		//All link
-		$class = ($current == 'all' ? ' class="current"' :'');
-		$all_url = remove_query_arg('flag');
+		$views['all'] = "";
+
+		foreach ( $flags as $key => $flag_arr ) {
+			$sql               = $wpdb->prepare( "SELECT COUNT(*) FROM $table WHERE flag = %s", $key );
+			$flag_arr['count'] = $wpdb->get_var( $sql );
+			$total             += $flag_arr['count'];
+			$url               = add_query_arg( 'flag', $key );
+			$class             = ( $current == $key ? ' class="current"' : '' );
+			$views[ $key ]     = "<a href='{$url}' {$class} >{$flag_arr['label']}<span class='count'>({$flag_arr['count']})</span></a>";
+		}
+
+		$class        = ( $current == 'all' ? ' class="current"' : '' );
+		$all_url      = remove_query_arg( 'flag' );
 		$views['all'] = "<a href='{$all_url }' {$class} >All <span class='count'>($total)</span></a>";
-
-		//Blocked link
-		$blocked_url = add_query_arg('flag','blocked');
-		$class = ($current == 'blocked' ? ' class="current"' :'');
-		$views['blocked'] = "<a href='{$blocked_url}' {$class} >Blocked <span class='count'>($blocked_count)</span></a>";
-
-		//Review link
-		$review_url = add_query_arg('flag','review');
-		$class = ($current == 'review' ? ' class="current"' :'');
-		$views['review'] = "<a href='{$review_url}' {$class} >Review Required <span class='count'>($review_count)</span></a>";
-
-		//Verified link
-		$verified_url = add_query_arg('flag','verified');
-		$class = ($current == 'verified' ? ' class="current"' :'');
-		$views['verified'] = "<a href='{$verified_url}' {$class} >Verified <span class='count'>($verified_count)</span></a>";
 
 		return $views;
 	}

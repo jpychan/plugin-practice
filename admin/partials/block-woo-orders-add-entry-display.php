@@ -12,15 +12,12 @@
  * @subpackage Block_Woo_Orders/admin/partials
  */
 
-$heading = isset($entry) ? "Update Entry" : "Add Entry";
-$add_url = admin_url('admin-post.php');
-if (!isset($entry)) {
-    $entry = array(
-        'flag' => '',
-        'notes' => '',
-        'name' => ''
-    );
-}
+$heading = isset( $entry ) ? "Update Entry" : "Add Entry";
+$add_url = admin_url( 'admin-post.php' );
+$name    = isset( $entry ) ? $entry->get_name() : '';
+$flag    = isset( $entry ) ? $entry->get_flag() : '';
+$notes   = isset( $entry ) ? $entry->get_notes() : '';
+$id      = isset( $entry ) ? $entry->get_id() : '';
 
 $type = $_REQUEST['type'] ?? '';
 
@@ -31,23 +28,24 @@ $type = $_REQUEST['type'] ?? '';
 
 <div class="wrap">
     <form id="dd-fraud-add" method="post" action="<?php echo $add_url ?>">
-        <?php wp_nonce_field('bwo_add_or_update_entry'); ?>
-        <input type="hidden" name="action" value="bwo_add_entry" />
+		<?php wp_nonce_field( 'bwo_add_or_update_entry' ); ?>
+        <input type="hidden" name="action" value="bwo_add_entry"/>
+        <input type="hidden" name="id" value="<?php echo $id; ?>"/>
         <p><label for="type">Type</label><br>
             <select name="type">
-                <option value="app_user_id" <?php selected($type, 'app_user_id'); ?>>App User ID</option>
-                <option value="email" <?php selected($type, 'email'); ?>>Email</option>
+                <option value="app_user_id" <?php selected( $type, 'app_user_id' ); ?>>App User ID</option>
+                <option value="email" <?php selected( $type, 'email' ); ?>>Email</option>
             </select></p>
         <p><label for="entry">App User ID / Email</label><br>
-            <input type="text" name="name" value="<?php echo $entry['name'] ?>"></p>
+            <input type="text" name="name" value="<?php echo $name ?>"></p>
         <p><label for="flag">Flag</label><br>
             <select name="flag">
-                <option value="blocked" <?php selected($entry['flag'], 'blocked'); ?>>Blocked</option>
-                <option value="review" <?php selected($entry['flag'], 'review'); ?>>Review</option>
-                <option value="verified" <?php selected($entry['flag'], 'verified'); ?>>Verified</option>
+                <option value="blocked" <?php selected( $flag, 'blocked' ); ?>>Blocked</option>
+                <option value="review" <?php selected( $flag, 'review' ); ?>>Review</option>
+                <option value="verified" <?php selected( $flag, 'verified' ); ?>>Verified</option>
             </select></p>
         <p><label for="notes">Notes</label></p>
-        <textarea name="notes" cols="50" rows="5"><?php echo($entry ? stripslashes($entry['notes']) : ""); ?></textarea>
-        <p><input class="button button-primary" type="submit" value="<?php echo ($heading); ?>"/></p>
+        <textarea name="notes" cols="50" rows="5"><?php echo( stripslashes( $notes ) ); ?></textarea>
+        <p><input class="button button-primary" type="submit" value="<?php echo( $heading ); ?>"/></p>
     </form>
 </div>

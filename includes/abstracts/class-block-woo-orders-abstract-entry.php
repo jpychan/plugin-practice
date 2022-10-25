@@ -21,7 +21,7 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 	private $table_name;
 
 	public function __construct( $id, $type ) {
-		$this->id = $id;
+		$this->id   = $id;
 		$this->type = $type;
 	}
 
@@ -70,7 +70,7 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 	}
 
 	protected function get_table_name() {
-		if (empty($this->table_name)) {
+		if ( empty( $this->table_name ) ) {
 			$this->set_table_name();
 		}
 
@@ -106,8 +106,8 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 	public function delete() {
 		if ( $this->get_id() ) {
 			global $wpdb;
-			$sql = $wpdb->prepare("DELETE FROM " . $this->get_table_name(). "  WHERE id = %d", $this->get_id());
-			$wpdb->query($sql);
+
+			return $wpdb->delete( $this->get_table_name(), array( 'id' => $this->get_id() ), array( '%d' ) );
 		}
 	}
 }
