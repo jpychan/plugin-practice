@@ -134,13 +134,17 @@ class Block_Woo_Orders {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-block-woo-orders-admin.php';
 
 		/**
+		 * The class responsible for displaying the entries
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-block-woo-orders-listing-table.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-block-woo-orders-public.php';
 
 		$this->loader = new Block_Woo_Orders_Loader();
-
 	}
 
 	/**

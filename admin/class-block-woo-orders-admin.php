@@ -41,6 +41,15 @@ class Block_Woo_Orders_Admin {
 	private $version;
 
 	/**
+	 * The class for the listing table to display emails and app user ids
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      Block_Woo_Orders_Listing_Table $listing_table
+	 */
+	private $listing_table;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -51,7 +60,6 @@ class Block_Woo_Orders_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -127,6 +135,15 @@ class Block_Woo_Orders_Admin {
 			'settings',
 			array( $this, 'admin_page_display' )
 		);
+
+		add_submenu_page(
+			'block-woo-orders',
+			'Emails',
+			'All Emails',
+			'manage_options',
+			'bwo_email',
+			array( $this, 'entry_listing_display' )
+		);
 	}
 
 	public function add_entry_page_display() {
@@ -135,6 +152,12 @@ class Block_Woo_Orders_Admin {
 
 	public function admin_page_display() {
 		include 'partials/block-woo-orders-admin-display.php';
+	}
+
+	public function entry_listing_display() {
+		$this->listing_table = new Block_Woo_Orders_Listing_Table();
+		$this->listing_table->prepare_items();
+		include 'partials/block-woo-orders-listing-table-display.php';
 	}
 
 	public function add_entry() {
