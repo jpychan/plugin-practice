@@ -32,8 +32,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 global $wpdb;
 $table_array = [
-	$wpdb->prefix . "wbo_app_user_ids",
-	$wpdb->prefix . "wbo_emails",
+	$wpdb->prefix . "bwo_app_user_ids",
+	$wpdb->prefix . "bwo_emails",
 ];
 
 foreach ( $table_array as $table ) {

@@ -32,7 +32,7 @@ class Block_Woo_Orders_Activator {
 		global $wpdb;
 
 		$charset_collate   = $wpdb->get_charset_collate();
-		$app_user_id_table = $wpdb->prefix . 'wbo_app_user_ids';
+		$app_user_id_table = $wpdb->prefix . 'bwo_app_user_ids';
 
 		$app_user_id_sql = "CREATE TABLE $app_user_id_table (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -47,14 +47,15 @@ class Block_Woo_Orders_Activator {
 
 		dbDelta( $app_user_id_sql );
 
-		$email_table = $wpdb->prefix . 'wbo_emails';
+		$email_table = $wpdb->prefix . 'bwo_emails';
 
 		$email_sql = "CREATE TABLE $email_table (
 			id bigint(20) NOT NULL AUTO_INCREMENT,
 			email varchar(100) NOT NULL,
-			flag varchar(10) NOT NULL,
+			flag varchar(10) NOT NULL DEFAULT 'blocked',
 			notes text,
 			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			updated_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY id (id),
 			UNIQUE (email)
 		) $charset_collate;";
