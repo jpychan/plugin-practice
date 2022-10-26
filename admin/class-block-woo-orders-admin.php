@@ -107,6 +107,15 @@ class Block_Woo_Orders_Admin {
 			'bwo_email',
 			array( $this, 'entry_listing_display' )
 		);
+
+		add_submenu_page(
+			'block-woo-orders',
+			'App User IDs',
+			'All App User IDs',
+			'manage_options',
+			'bwo_app_user_id',
+			array( $this, 'entry_listing_display' )
+		);
 	}
 
 	public function add_entry_page_display() {
@@ -124,35 +133,43 @@ class Block_Woo_Orders_Admin {
 	}
 
 	public function add_entry() {
-		check_admin_referer( 'bwo_add_or_update_entry' );
-		$type = $_POST['type'];
-		$id   = intval( $_POST['id'] );
+		try {
+			check_admin_referer( 'bwo_add_or_update_entry' );
+			$type = $_POST['type'];
+			$id   = intval( $_POST['id'] );
 
-		if ( ! empty( $id ) ) {
-			$entry = new Block_Woo_Orders_Email( $id );
-		} else {
-			$entry = new Block_Woo_Orders_Email();
+			if ( $type === "email" ) {
+				$entry = new Block_Woo_Orders_Email( $id );
+				$name  = sanitize_email( $_POST['name'] );
+			} else if ( $type === "app_user_id" ) {
+				$entry = new Block_Woo_Orders_App_User_Id( $id );
+				$name  = sanitize_text_field( $_POST['name'] );
+			}
+
+			$notes = sanitize_textarea_field( $_POST['notes'] );
+			$flag  = sanitize_text_field( $_POST['flag'] );
+
+			$entry->set_name( $name );
+			$entry->set_flag( $flag );
+			$entry->set_notes( $notes );
+
+			$result = $entry->save();
+
+			$args = array(
+				'added' => $result > 0 ? 1 : 0
+			);
+
+			wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php?page=bwo_' . $type ) ) );
+			exit();
+		} catch ( Exception ) {
+			$args = array(
+				'added'     => 0,
+				'error_msg' => "$name is not a valid email",
+			);
+
+			$redirect = add_query_arg( $args, admin_url( 'admin.php?page=add-block-woo-orders-entry' ) );
+			wp_safe_redirect( $redirect );
+			exit();
 		}
-
-		if ( $type === "email" ) {
-			$name = sanitize_email( $_POST['name'] );
-		} else {
-			$name = sanitize_text_field( $_POST['name'] );
-		}
-
-		$notes = sanitize_textarea_field( $_POST['notes'] );
-		$flag  = sanitize_text_field( $_POST['flag'] );
-
-		$entry->set_name( $name );
-		$entry->set_flag( $flag );
-		$entry->set_notes( $notes );
-
-		$result = $entry->save();
-
-		$added = $result > 0 ? 1 : 0;
-
-//		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'added' => $added ), admin_url( 'admin.php?page=dd_fraud_' . $type ) ) ) );
-		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'added' => $added ), admin_url( 'admin.php?page=bwo_email' ) ) ) );
-		exit();
 	}
 }

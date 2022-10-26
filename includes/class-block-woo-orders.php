@@ -123,6 +123,11 @@ class Block_Woo_Orders {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-block-woo-orders-email.php';
 
 		/**
+		 * The class to load the app_user_id entries
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-block-woo-orders-app-user-id.php';
+
+		/**
 		 * The class responsible for defining Woocommerce order custom statuses
 		 * of the plugin.
 		 */
@@ -212,7 +217,7 @@ class Block_Woo_Orders {
 	private function define_woocommerce_hooks() {
 
 		$woocommerce_hooks = new Block_Woo_Orders_Woocommerce_Hooks();
-		$this->loader->add_action('woocommerce_checkout_order_processed', $woocommerce_hooks, 'scan_orders_for_fraud', 10, 3);
+		$this->loader->add_action( 'woocommerce_checkout_order_processed', $woocommerce_hooks, 'scan_orders_for_fraud', 10, 3 );
 
 	}
 

@@ -254,6 +254,10 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			$email = new Block_Woo_Orders_Email( $id );
 
 			return $email;
+		} else if ( $type === "app_user_id" ) {
+			$app_user_id = new Block_Woo_Orders_App_User_Id( $id );
+
+			return $app_user_id;
 		}
 	}
 

@@ -14,10 +14,10 @@
 
 $heading = isset( $entry ) ? "Update Entry" : "Add Entry";
 $add_url = admin_url( 'admin-post.php' );
+$id      = isset( $entry ) ? $entry->get_id() : '';
 $name    = isset( $entry ) ? $entry->get_name() : '';
 $flag    = isset( $entry ) ? $entry->get_flag() : '';
 $notes   = isset( $entry ) ? $entry->get_notes() : '';
-$id      = isset( $entry ) ? $entry->get_id() : '';
 
 $type = $_REQUEST['type'] ?? '';
 
