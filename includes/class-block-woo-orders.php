@@ -218,6 +218,10 @@ class Block_Woo_Orders {
 
 		$woocommerce_hooks = new Block_Woo_Orders_Woocommerce_Hooks();
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $woocommerce_hooks, 'scan_orders_for_fraud', 10, 3 );
+		$this->loader->add_action( 'woocommerce_before_checkout_billing_form', $woocommerce_hooks, 'add_app_user_id_field', 10, 3 );
+		$this->loader->add_action( 'woocommerce_checkout_process', $woocommerce_hooks, 'verify_app_user_id_field', 10, 3 );
+		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $woocommerce_hooks, 'update_order_meta_app_user_id', 10, 3 );
+		$this->loader->add_action( 'woocommerce_admin_order_data_after_billing_address', $woocommerce_hooks, 'display_admin_order_meta_app_user_id', 10, 3 );
 
 	}
 

@@ -19,7 +19,7 @@ class Block_Woo_Orders_Woocommerce_Hooks {
 		$app_user_id_table = $wpdb->prefix . 'bwo_app_user_ids';
 		$email_table       = $wpdb->prefix . 'bwo_emails';
 
-		$app_user_id = "1234";
+		$app_user_id = $order->get_meta( 'app_user_id' );
 		$email       = $order->get_billing_email();
 
 		$app_user_id_query = $wpdb->prepare( "SELECT * FROM $app_user_id_table WHERE app_user_id = %s", $app_user_id );
@@ -67,5 +67,31 @@ class Block_Woo_Orders_Woocommerce_Hooks {
 		if ( ! empty( $scan_result ) ) {
 			update_post_meta( $order_id, 'scan_result', json_encode( $scan_result ) );
 		}
+	}
+
+	public function add_app_user_id_field( $checkout ) {
+		woocommerce_form_field( 'app_user_id', array(
+			'type'        => 'text',
+			'class'       => array( 'app-user-id form-row-wide' ),
+			'label'       => __( 'Your App User ID' ),
+			'placeholder' => __( 'App User ID' ),
+			'required'    => true,
+		), $checkout->get_value( 'app_user_id' ) );
+	}
+
+	public function verify_app_user_id_field() {
+		if ( ! $_POST['app_user_id'] ) {
+			wc_add_notice( __( 'Please enter an App User ID.' ), 'error' );
+		}
+	}
+
+	public function update_order_meta_app_user_id( $order_id ) {
+		if ( ! empty( $_POST['app_user_id'] ) ) {
+			update_post_meta( $order_id, 'app_user_id', sanitize_text_field( $_POST['app_user_id'] ) );
+		}
+	}
+
+	public function display_admin_order_meta_app_user_id( $order ) {
+		echo '<p><strong>' . __( 'App User ID', 'woocommerce' ) . ':</strong> ' . $order->get_meta( 'app_user_id' ) . '</p>';
 	}
 }
