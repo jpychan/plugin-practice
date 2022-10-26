@@ -13,6 +13,11 @@
 class Block_Woo_Orders_Woocommerce_Hooks {
 
 	public function scan_orders_for_fraud( $order_id, $posted_data, $order ) {
+
+		if ( empty( get_option( 'bwo_scan_enabled' ) ) ) {
+			return;
+		}
+
 		global $wpdb;
 
 		// fetch data

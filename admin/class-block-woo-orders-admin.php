@@ -118,6 +118,68 @@ class Block_Woo_Orders_Admin {
 		);
 	}
 
+	public function admin_init() {
+		// add setting sections
+		$this->add_settings_sections();
+
+		// add setting fields
+		$this->add_settings_fields();
+
+		// save settings
+		$this->save_settings();
+	}
+
+	public function add_settings_sections() {
+		add_settings_section(
+			'bwo-general-section',
+			'General Settings',
+			function () {
+				echo '<p>These are general settings.</p>';
+			},
+			'bwo-settings-page',
+		);
+	}
+
+	public function add_settings_fields() {
+		add_settings_field(
+			'bwo_scan_enabled',
+			'Enable Scan?',
+			array( $this, 'checkbox_cb' ),
+			'bwo-settings-page',
+			'bwo-general-section',
+			array(
+				'name'        => 'bwo_scan_enabled',
+				'value'       => '1',
+				'saved_value' => get_option( 'bwo_scan_enabled' ),
+			)
+		);
+	}
+
+	public function checkbox_cb( $args ) {
+		if ( ! is_array( $args ) || empty( $args ) ) {
+			return;
+		}
+
+		$name  = $args['name'] ?? '';
+		$label = $args['label'] ?? '';
+		$value = $args['value'] ?? '';
+
+		?>
+        <input type="checkbox" name="<?php echo $name ?>"
+               value="<?php echo $value ?>" <?php checked( 1, get_option( $name ), true ); ?> />
+        <label for="<?php echo $name ?>"><?php echo $label ?></label>
+		<?php
+	}
+
+	public function save_settings() {
+		register_setting(
+			'bwo-settings-page-options-group',
+			'bwo_scan_enabled',
+			'',
+		);
+	}
+
+
 	public function add_entry_page_display() {
 		include 'partials/block-woo-orders-add-entry-display.php';
 	}
