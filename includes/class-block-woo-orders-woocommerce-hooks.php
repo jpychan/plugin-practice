@@ -56,16 +56,17 @@ class Block_Woo_Orders_Woocommerce_Hooks {
 			}
 		}
 
+		if ( ! empty( $scan_result ) ) {
+			update_post_meta( $order_id, 'scan_result', json_encode( $scan_result ) );
+		}
+
 		if ( $is_blocked ) {
 			$order->update_status( 'blocked' );
+			throw new Exception( __( 'Your email has been blacklisted from ordering. Please reach out to <a href="mailto:support@example.com">support@example.com</a> if this was an error.', 'block-woo-orders' ) );
 		} else if ( $review_required && ! $is_verified ) {
 			$order->update_status( 'review-required' );
 		} else if ( $is_verified ) {
 			$order->update_status( 'verified' );
-		}
-
-		if ( ! empty( $scan_result ) ) {
-			update_post_meta( $order_id, 'scan_result', json_encode( $scan_result ) );
 		}
 	}
 
