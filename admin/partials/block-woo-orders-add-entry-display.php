@@ -21,7 +21,11 @@ $notes   = isset( $entry ) ? $entry->get_notes() : '';
 
 $type = $_REQUEST['type'] ?? '';
 
-?>
+if (isset($_GET['added']) && $_GET['added'] == 1) { ?>
+	<div class="notice notice-success is-dismissible"><p><?php _e('Entry Saved', 'block-woo-orders'); ?>.</p></div>
+<?php } else if (!empty($_GET['error_msg'])) { ?>
+    <div class="notice notice-error is-dismissible"><p><?php echo urldecode($_GET['error_msg']) ?></p></div>
+<?php } ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
 <h1><?php echo $heading ?></h1>

@@ -203,6 +203,9 @@ class Block_Woo_Orders_Admin {
 			if ( $type === "email" ) {
 				$entry = new Block_Woo_Orders_Email( $id );
 				$name  = sanitize_email( $_POST['name'] );
+                if (empty($name)) {
+                    throw new Exception($_POST['name'] . " is not a valid email.");
+                }
 			} else if ( $type === "app_user_id" ) {
 				$entry = new Block_Woo_Orders_App_User_Id( $id );
 				$name  = sanitize_text_field( $_POST['name'] );
@@ -217,16 +220,20 @@ class Block_Woo_Orders_Admin {
 
 			$result = $entry->save();
 
-			$args = array(
-				'added' => $result > 0 ? 1 : 0
-			);
+            if (empty($result)) {
+                global $wpdb;
+                throw new Exception($wpdb->last_error);
+            }
 
-			wp_safe_redirect( add_query_arg( $args, admin_url( 'admin.php?page=bwo_' . $type ) ) );
+            $args = array( 'added' => 1 );
+
+			$redirect = add_query_arg( $args, admin_url( 'admin.php?page=add-block-woo-orders-entry' ) );
+			wp_safe_redirect( $redirect );
 			exit();
-		} catch ( Exception ) {
+		} catch ( Exception $e ) {
 			$args = array(
 				'added'     => 0,
-				'error_msg' => "$name is not a valid email",
+				'error_msg' => $e->getMessage(),
 			);
 
 			$redirect = add_query_arg( $args, admin_url( 'admin.php?page=add-block-woo-orders-entry' ) );

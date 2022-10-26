@@ -151,10 +151,11 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			// verify the nonce.
 			if ( ! wp_verify_nonce( $nonce, 'delete_entry' ) ) {
 				$this->invalid_nonce_redirect();
+				exit();
 			} else {
 				$deleted = $this->delete_entry( absint( $_REQUEST['id'] ), $_REQUEST['type'] );
-				$url     = wp_get_referer();
-				wp_redirect( add_query_arg( 'deleted', $deleted, $url ) );
+				$url     = admin_url( 'admin.php?page=bwo_' . $_REQUEST['type'] );
+				wp_safe_redirect( add_query_arg( 'deleted', $deleted, $url ) );
 				exit();
 			}
 		}
@@ -164,6 +165,7 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 			// verify the nonce.
 			if ( ! wp_verify_nonce( $nonce, 'edit_entry' ) ) {
 				$this->invalid_nonce_redirect();
+				exit();
 			} else {
 				$this->page_view_edit_entry( absint( $_REQUEST['id'] ), $_REQUEST['type'] );
 				exit();
@@ -228,9 +230,13 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 
 	private function delete_entry( $id, $type ) {
 		if ( $type === "email" ) {
-			$email = new Block_Woo_Orders_Email( $id );
+			$entry = new Block_Woo_Orders_Email( $id );
 
-			return $email->delete();
+			return $entry->delete();
+		} else if ( $type === "app_user_id" ) {
+			$entry = new Block_Woo_Orders_App_User_Id( $id );
+
+			return $entry->delete();
 		}
 	}
 
