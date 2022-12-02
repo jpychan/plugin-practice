@@ -13,7 +13,7 @@
  */
 ?>
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
+
 <div class="wrap">
     <h1><?php echo get_admin_page_title(); ?></h1>
     <?php settings_errors(); ?>

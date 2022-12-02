@@ -28,7 +28,10 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		);
 	}
 
-	public function get_entry_type() {
+	/**
+	 * @return string
+	 */
+	private function get_entry_type() {
 		$type = str_replace( 'bwo_', "", $_GET['page'] );
 
 		return $type;
@@ -53,6 +56,13 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		return $table_columns;
 	}
 
+	/**
+	 * Default columns
+	 * @param $item
+	 * @param $column_name
+	 *
+	 * @return mixed|void
+	 */
 	public function column_default( $item, $column_name ) {
 		$type = $this->get_entry_type();
 		switch ( $column_name ) {
@@ -66,7 +76,11 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		}
 	}
 
-	//Query, filter data, handle sorting, pagination, and any other data-manipulation required prior to rendering
+	/**
+	 * Query, filter data, handle sorting, pagination, and any other data-manipulation required prior to rendering
+	 *
+	 * @return void
+	 */
 	public function prepare_items() {
 
 		$columns  = $this->get_columns();
@@ -95,7 +109,12 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		) );
 	}
 
-	public function fetch_table_data() {
+	/**
+	 * Get data from database
+	 *
+	 * @return array
+	 */
+	private function fetch_table_data() {
 
 		$type = $this->get_entry_type();
 		$flag = ( isset( $_REQUEST['flag'] ) ? $_REQUEST['flag'] : 'all' );
@@ -143,6 +162,11 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		return $data;
 	}
 
+	/**
+	 * Handle table functions (Edit Entry, Delete Entry)
+	 *
+	 * @return void
+	 */
 	public function handle_table_actions() {
 		$the_table_action = $this->current_action();
 
@@ -173,10 +197,20 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		}
 	}
 
+	/**
+	 * When no items are found.
+	 *
+	 * @return void
+	 */
 	public function no_items() {
 		_e( 'No entries found.', 'block-woo-orders' );
 	}
 
+	/**
+	 * Define sortable columns
+	 *
+	 * @return array[]
+	 */
 	protected function get_sortable_columns() {
 		$type             = $this->get_entry_type();
 		$sortable_columns = array(
@@ -189,6 +223,12 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		return $sortable_columns;
 	}
 
+	/**
+	 * Column to display each email or app user id
+	 * @param $item
+	 *
+	 * @return string
+	 */
 	protected function column_entry( $item ) {
 		$type = $this->get_entry_type();
 
@@ -222,12 +262,24 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		return $row_value . $this->row_actions( $actions );
 	}
 
+	/**
+	 * @param $item
+	 *
+	 * @return string
+	 */
 	protected function column_notes( $item ) {
 		$row_value = stripslashes( $item['notes'] );
 
 		return $row_value;
 	}
 
+	/**
+	 *
+	 * @param $id
+	 * @param $type
+	 *
+	 * @return bool|int|mysqli_result|resource|void|null
+	 */
 	private function delete_entry( $id, $type ) {
 		if ( $type === "email" ) {
 			$entry = new Block_Woo_Orders_Email( $id );
@@ -240,7 +292,11 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		}
 	}
 
-	public function invalid_nonce_redirect() {
+	/**
+	 *
+	 * @return void
+	 */
+	private function invalid_nonce_redirect() {
 		wp_die( __( 'Invalid Nonce', 'block-woo-orders' ),
 			__( 'Error', 'block-woo-orders' ),
 			array(
@@ -250,11 +306,25 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		);
 	}
 
+	/**
+	 * @param $id
+	 * @param $type
+	 *
+	 * @return void
+	 */
 	private function page_view_edit_entry( $id, $type ) {
 		$entry = $this->get_entry( $id, $type );
 		include_once( 'partials/block-woo-orders-add-entry-display.php' );
 	}
 
+	/**
+	 * Get the entry by ID
+	 * 
+	 * @param $id
+	 * @param $type
+	 *
+	 * @return Block_Woo_Orders_App_User_Id|Block_Woo_Orders_Email|void
+	 */
 	private function get_entry( $id, $type ) {
 		if ( $type === "email" ) {
 			$email = new Block_Woo_Orders_Email( $id );
@@ -267,6 +337,11 @@ class Block_Woo_Orders_Listing_Table extends WP_List_Table {
 		}
 	}
 
+	/**
+	 * Define status filters in the listing table
+	 *
+	 * @return array
+	 */
 	protected function get_views() {
 		global $wpdb;
 

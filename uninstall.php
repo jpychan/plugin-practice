@@ -30,6 +30,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// Remove database tables upon uninstall
 global $wpdb;
 $table_array = [
 	$wpdb->prefix . "bwo_app_user_ids",

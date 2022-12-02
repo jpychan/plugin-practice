@@ -2,7 +2,6 @@
 /**
  * Add custom statuses to Woocommerce orders
  *
- *
  * @package    Block_Woo_Orders
  * @subpackage Block_Woo_Orders/includes
  * @author     Jenny Chan <jenny@jennychan.dev>
@@ -15,6 +14,10 @@ if ( ! defined( 'WPINC' ) ) {
 
 class Block_Woo_Orders_Custom_Statuses {
 
+	/**
+	 * Register custom statuses
+	 * @return void
+	 */
 	public function register_custom_statuses() {
 		register_post_status( 'wc-verified', array(
 			'label'                     => 'Verified',
@@ -44,6 +47,12 @@ class Block_Woo_Orders_Custom_Statuses {
 		) );
 	}
 
+	/**
+	 * Add custom statuses to orders
+	 * @param $order_statuses
+	 *
+	 * @return array
+	 */
 	public function add_custom_statuses_to_order( $order_statuses ) {
 
 		$new_order_statuses = array();
@@ -59,6 +68,14 @@ class Block_Woo_Orders_Custom_Statuses {
 		return $new_order_statuses;
 	}
 
+	/**
+	 * Add order statues to Order Post Type
+	 *
+	 * @param array $statuses
+	 * @param WC_Order $order
+	 *
+	 * @return mixed
+	 */
 	public function add_new_order_statuses( $statuses, $order ) {
 		// Registering the custom status as valid for payment
 		$statuses[] = 'review-required';

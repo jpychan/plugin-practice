@@ -4,71 +4,156 @@ defined( 'ABSPATH' ) || exit;
 
 abstract class Block_Woo_Orders_Abstract_Entry {
 
+	/**
+	 * @var      int $id The ID of the entry
+	 */
 	protected $id;
 
+	/**
+	 * The name of the entry
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string $name The name of the entry
+	 */
 	protected $name;
 
+	/**
+	 * The flag of the entry (blocked, verified, review)
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string $flag The flag of the entry
+	 */
 	protected $flag;
 
+	/**
+	 * The notes of the entry
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string $notes The notes of the entry
+	 */
 	protected $notes;
 
+	/**
+	 * The type of the entry
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string $type The type of the entry (email or app_user_id)
+	 */
 	protected $type;
 
+	/**
+	 * The time of creation for the entry
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      datetime $type The time of creation for the entry
+	 */
 	protected $created_at;
 
+	/**
+	 * The time of last update for the entry
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      datetime $type The time of last update for the entry
+	 */
 	protected $updated_at;
 
+	/**
+	 * The database table name associated with the entry type
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      string $type The database table name associated with the entry type
+	 */
 	private $table_name;
 
+
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @param int $id The name of the entry.
+	 * @param type $type The version of the entry.
+	 *
+	 * @since    1.0.0
+	 */
 	public function __construct( $id, $type ) {
 		$this->id   = $id;
 		$this->type = $type;
 	}
 
+	/**
+	 * Get the ID
+	 *
+	 * @return int
+	 */
 	public function get_id() {
 		return $this->id;
 	}
 
+	/**
+	 * Get the name
+	 *
+	 * @return string
+	 */
 	public function get_name() {
 		return $this->name;
 	}
 
+	/**
+	 * Get the flag
+	 *
+	 * @return string
+	 */
 	public function get_flag() {
 		return $this->flag;
 	}
 
+	/**
+	 * Get the notes
+	 *
+	 * @return string
+	 */
 	public function get_notes() {
 		return $this->notes;
 	}
 
+	/**
+	 * Get type
+	 *
+	 * @return string
+	 */
 	public function get_type() {
 		return $this->type;
 	}
 
+	/**
+	 * Get creation time
+	 *
+	 * @return datetime
+	 */
 	public function get_created_at() {
 		return $this->created_at;
 	}
 
+	/**
+	 * Get last updated time
+	 *
+	 * @return datetime
+	 */
 	public function get_updated_at() {
 		return $this->updated_at;
 	}
 
-	protected function set_id( $id ) {
-		$this->id = $id;
-	}
-
-	public function set_name( $name ) {
-		$this->name = $name;
-	}
-
-	public function set_flag( $flag ) {
-		$this->flag = $flag;
-	}
-
-	public function set_notes( $notes ) {
-		$this->notes = $notes;
-	}
-
+	/**
+	 * Get database table name
+	 *
+	 * @return string
+	 */
 	public function get_table_name() {
 		if ( empty( $this->table_name ) ) {
 			$this->set_table_name();
@@ -77,12 +162,55 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 		return $this->table_name;
 	}
 
+	/**
+	 * Set the ID
+	 *
+	 * @param int $id
+	 */
+	protected function set_id( $id ) {
+		$this->id = $id;
+	}
+
+	/**
+	 * Set the name
+	 *
+	 * @param string $name
+	 */
+	public function set_name( $name ) {
+		$this->name = $name;
+	}
+
+	/**
+	 * Set the flag
+	 *
+	 * @param string $flag
+	 */
+	public function set_flag( $flag ) {
+		$this->flag = $flag;
+	}
+
+	/**
+	 * Set the notes
+	 *
+	 * @param string $notes
+	 */
+	public function set_notes( $notes ) {
+		$this->notes = $notes;
+	}
+
+	/**
+	 * Set table name based on type
+	 */
 	public function set_table_name() {
 		global $wpdb;
 
 		$this->table_name = $wpdb->prefix . "bwo_" . $this->get_type() . "s";
 	}
 
+	/**
+	 * Save the entry in the database
+	 * @return bool|int|mysqli_result|resource|null
+	 */
 	public function save() {
 		if ( $this->get_id() ) {
 			return $this->update();
@@ -96,6 +224,11 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 		}
 	}
 
+	/**
+	 * Create the entry in the database.
+	 *
+	 * @return bool|int|mysqli_result|resource|null
+	 */
 	public function create() {
 		// sql to insert the entry
 		global $wpdb;
@@ -106,6 +239,11 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 		return $wpdb->query( $sql );
 	}
 
+	/**
+	 * Update the entry in the database
+	 *
+	 * @return bool|int|mysqli_result|resource|null
+	 */
 	public function update() {
 		global $wpdb;
 		$sql = $wpdb->prepare(
@@ -120,6 +258,11 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 		return $wpdb->query( $sql );
 	}
 
+	/**
+	 * Delete the entry from the database
+	 *
+	 * @return bool|int|mysqli_result|resource|void|null
+	 */
 	public function delete() {
 		if ( $this->get_id() ) {
 			global $wpdb;
@@ -128,7 +271,12 @@ abstract class Block_Woo_Orders_Abstract_Entry {
 		}
 	}
 
-	public function search_by_id( $id ) {
+	/**
+	 * Search the entry by ID and set the other properties if found
+	 *
+	 * @param $id
+	 */
+	protected function search_by_id( $id ) {
 		global $wpdb;
 		$sql    = $wpdb->prepare( "SELECT * FROM {$this->get_table_name()} WHERE id = %d", $id );
 		$result = $wpdb->get_row( $sql, 'ARRAY_A' );
