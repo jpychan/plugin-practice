@@ -1,3 +1,5 @@
+This is an example project to showcase my plugin development skills based on a client project.
+
 === Block Woocommerce Orders === 
 
 Contributors: Jenny Chan  
